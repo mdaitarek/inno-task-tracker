@@ -1,6 +1,6 @@
 # Inno Task Tracker (NestJS + MongoDB)
 
-A tiny 5-endpoint assignment to evaluate your NestJS basics. You have **3 days** to submit a PR.
+A tiny 5-endpoint assignment to evaluate your NestJS basics. You have **5 days** to submit a PR.
 
 ## Goal
 
