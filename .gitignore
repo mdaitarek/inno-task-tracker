@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+coverage/
+dist/
+
+# env
+.env
+.env.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# docker artifacts
+*.pid
+*.seed
+*.log
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

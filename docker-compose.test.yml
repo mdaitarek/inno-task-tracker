@@ -1,0 +1,22 @@
+version: '3.9'
+services:
+  mongo:
+    image: mongo:7
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    command: [ "mongod", "--quiet", "--logpath=/dev/null" ]
+
+  api_test:
+    build:
+      context: .
+      target: dev
+    environment:
+      MONGO_URI: mongodb://mongo:27017/inno-task-tracker-test
+      NODE_ENV: test
+    depends_on:
+      mongo:
+        condition: service_healthy
+    command: npm run test
