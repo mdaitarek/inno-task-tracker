@@ -80,4 +80,18 @@ All tests must pass ✅
 
 - Keep code clean & idiomatic.
 
+
+## Advanced Management Techniques
+
+To ensure a robust, production-ready API, you may choose to implement:
+
+- Authorization (e.g., JWT, role‑based access control)
+
+- Rate limiting
+
+- Caching
+
+- Logging & monitoring
+
+
 Good luck!
