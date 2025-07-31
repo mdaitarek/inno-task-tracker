@@ -1,10 +1,16 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
 import { CreateTaskDto } from 'src/tasks/dto';
+import { TasksService } from 'src/tasks/tasks.service';
 
 @Controller('tasks')
 export class TasksController {
-  @Post() create(@Body() _dto: CreateTaskDto) {
-    this.notImpl();
+  constructor(private readonly tasksService: TasksService) {
+  }
+
+  @Post()
+  create(@Body() _dto: CreateTaskDto) {
+    console.log({ _dto });
+    return this.tasksService.create(_dto);
   }
 
   @Get() list(@Query() _q: any) {
