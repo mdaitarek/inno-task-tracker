@@ -1,4 +1,4 @@
-import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 export enum TaskStatus {
@@ -12,10 +12,14 @@ export class Task extends Document {
   @Prop({ required: true })
   title: string;
 
-  @Prop()
+  @Prop({ type: String, trim: true, default: '' })
   description?: string;
 
-  @Prop()
+  @Prop({
+    type: Date,
+    nullable: true,
+    default: null,
+  })
   dueDate?: Date;
 
   @Prop({ enum: TaskStatus, default: TaskStatus.OPEN })
