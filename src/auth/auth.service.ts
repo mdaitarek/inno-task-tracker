@@ -3,14 +3,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import { Model, Types } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import { Role } from 'src/common';
+import { Role } from '../common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from 'src/auth/dto/login.dto';
+import { LoginDto } from './dto';
 
 interface ValidatedUser {
   _id: string;
-  name: string;
+  email: string;
   role: string;
 }
 
@@ -22,17 +22,11 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signup(
-    name: string,
-    email: string,
-    password: string,
-    role: Role,
-  ): Promise<User> {
+  async signup(email: string, password: string, role: Role): Promise<User> {
     const exists = await this.userModel.findOne({ email });
     if (exists) throw new ConflictException('Email already taken');
     const passwordHash = await bcrypt.hash(password, 10);
     return await this.userModel.create({
-      name,
       email,
       passwordHash,
       role,
@@ -55,7 +49,7 @@ export class AuthService {
 
     return {
       _id: (user._id as Types.ObjectId).toString(),
-      name: user.name,
+      email: user.email,
       role: user.role,
     };
   }

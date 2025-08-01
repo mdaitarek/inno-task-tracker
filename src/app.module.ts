@@ -9,7 +9,7 @@ import * as dotenv from 'dotenv';
 import { configuration } from './config';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { HttpExceptionsFilter, LoggingInterceptor } from 'src/common';
+import { HttpExceptionsFilter, LoggingInterceptor } from './common';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 dotenv.config();

@@ -1,12 +1,9 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateAdminDto, SignupDto } from './dto';
+import { ApiOperation } from '@nestjs/swagger';
+import { CreateAdminDto, LoginDto, SignupDto } from './dto';
 import { AuthService } from './auth.service';
-import { Role } from 'src/common';
-import { LocalAuthGuard } from 'src/common/guards';
-import { LoginDto } from 'src/auth/dto/login.dto';
+import { LocalAuthGuard, Role } from '../common';
 
-@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -17,12 +14,7 @@ export class AuthController {
     description: 'Register a new user account.',
   })
   async signup(@Body() dto: SignupDto) {
-    return this.authService.signup(
-      dto.name,
-      dto.email,
-      dto.password,
-      Role.USER,
-    );
+    return this.authService.signup(dto.email, dto.password, Role.USER);
   }
 
   @Post('create-admin')
@@ -31,12 +23,7 @@ export class AuthController {
     description: 'Register a new admin account.',
   })
   async createAdmin(@Body() dto: CreateAdminDto) {
-    return this.authService.signup(
-      dto.name,
-      dto.email,
-      dto.password,
-      Role.ADMIN,
-    );
+    return this.authService.signup(dto.email, dto.password, Role.ADMIN);
   }
 
   @UseGuards(LocalAuthGuard)

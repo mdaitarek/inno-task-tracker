@@ -2,19 +2,21 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Task } from './schemas/task.schema';
-import { CreateTaskDto, GetTasksDto, UpdateTaskStatusDto } from 'src/tasks/dto';
+import { CreateTaskDto, GetTasksDto, UpdateTaskStatusDto } from '../tasks/dto';
+import { User } from '../auth/schemas/user.schema';
 
 @Injectable()
 export class TasksService {
   constructor(@InjectModel(Task.name) private taskModel: Model<Task>) {}
 
-  async create(_dto: CreateTaskDto) {
+  async create(_dto: CreateTaskDto, user: User) {
     const { title, description, dueDate, status } = _dto;
     return await this.taskModel.create({
       title,
       description: description ?? '',
       dueDate: dueDate ?? null,
       ...(status && { status }),
+      createdBy: user,
     });
   }
 

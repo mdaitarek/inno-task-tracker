@@ -1,18 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Role } from 'src/common';
+import { Role } from '../../common';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 @Schema({ timestamps: true })
 export class User extends Document {
-  @Prop({
-    type: String,
-    required: [true, 'Name is required'],
-    trim: true,
-  })
-  name: string;
-
   @Prop({
     type: String,
     required: [true, 'Email is required'],
