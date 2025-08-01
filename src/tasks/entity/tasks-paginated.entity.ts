@@ -7,7 +7,7 @@ export class TasksPaginatedEntity {
     description: 'Array of task entities',
     type: [TaskEntity],
   })
-  data: Task[];
+  data: TaskEntity[];
 
   @ApiProperty({
     description: 'Pagination metadata',

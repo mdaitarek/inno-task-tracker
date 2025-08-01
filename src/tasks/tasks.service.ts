@@ -1,22 +1,29 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Task } from './schemas/task.schema';
 import { CreateTaskDto, GetTasksDto, UpdateTaskStatusDto } from '../tasks/dto';
-import { User } from '../auth/schemas/user.schema';
+import { TaskEntity } from './entity/task.entity';
 
 @Injectable()
 export class TasksService {
   constructor(@InjectModel(Task.name) private taskModel: Model<Task>) {}
 
-  async create(_dto: CreateTaskDto, user: User) {
+  async create(_dto: CreateTaskDto): Promise<TaskEntity> {
     const { title, description, dueDate, status } = _dto;
-    return await this.taskModel.create({
+    const task = await this.taskModel.create({
       title,
       description: description ?? '',
       dueDate: dueDate ?? null,
       ...(status && { status }),
-      createdBy: user,
+    });
+
+    return new TaskEntity({
+      id: (task._id as Types.ObjectId).toString(),
+      title: task.title,
+      description: task.description,
+      dueDate: task.dueDate,
+      status: task.status,
     });
   }
 
@@ -35,7 +42,7 @@ export class TasksService {
     };
     const skip = (page - 1) * limit;
 
-    const data = await this.taskModel
+    const tasks = await this.taskModel
       .find(filter)
       .skip(skip)
       .limit(limit)
@@ -43,6 +50,17 @@ export class TasksService {
 
     const total = await this.taskModel.countDocuments(filter);
     const totalPages = Math.ceil(total / limit);
+
+    const data = tasks.map(
+      (task) =>
+        new TaskEntity({
+          id: (task._id as Types.ObjectId).toString(),
+          title: task.title,
+          description: task.description,
+          dueDate: task.dueDate,
+          status: task.status,
+        }),
+    );
 
     return {
       data,
@@ -55,7 +73,10 @@ export class TasksService {
     };
   }
 
-  async updateStatus(id: string, updateDto: UpdateTaskStatusDto) {
+  async updateStatus(
+    id: string,
+    updateDto: UpdateTaskStatusDto,
+  ): Promise<TaskEntity> {
     const task = await this.taskModel.findByIdAndUpdate(
       id,
       { status: updateDto.status },
@@ -66,6 +87,12 @@ export class TasksService {
       throw new NotFoundException(`Task not found`);
     }
 
-    return task;
+    return new TaskEntity({
+      id: (task._id as Types.ObjectId).toString(),
+      title: task.title,
+      description: task.description,
+      dueDate: task.dueDate,
+      status: task.status,
+    });
   }
 }

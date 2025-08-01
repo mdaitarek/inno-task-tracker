@@ -1,8 +1,9 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateAdminDto, LoginDto, SignupDto } from './dto';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard, Role } from '../common';
+import { UserEntity } from './entity';
 
 @Controller('auth')
 export class AuthController {
@@ -13,7 +14,13 @@ export class AuthController {
     summary: 'User Signup',
     description: 'Register a new user account.',
   })
-  async signup(@Body() dto: SignupDto) {
+  @ApiResponse({
+    status: 201,
+    description: 'The user has been successfully created.',
+    type: UserEntity,
+  })
+  @ApiResponse({ status: 409, description: 'Email already taken.' })
+  async signup(@Body() dto: SignupDto): Promise<UserEntity> {
     return this.authService.signup(dto.email, dto.password, Role.USER);
   }
 
@@ -22,7 +29,13 @@ export class AuthController {
     summary: 'Create Admin',
     description: 'Register a new admin account.',
   })
-  async createAdmin(@Body() dto: CreateAdminDto) {
+  @ApiResponse({
+    status: 201,
+    description: 'The admin has been successfully created.',
+    type: UserEntity,
+  })
+  @ApiResponse({ status: 409, description: 'Email already taken.' })
+  async createAdmin(@Body() dto: CreateAdminDto): Promise<UserEntity> {
     return this.authService.signup(dto.email, dto.password, Role.ADMIN);
   }
 

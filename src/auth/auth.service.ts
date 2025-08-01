@@ -7,12 +7,7 @@ import { Role } from '../common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto';
-
-interface ValidatedUser {
-  _id: string;
-  email: string;
-  role: string;
-}
+import { UserEntity } from './entity';
 
 @Injectable()
 export class AuthService {
@@ -22,21 +17,32 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signup(email: string, password: string, role: Role): Promise<User> {
+  async signup(
+    email: string,
+    password: string,
+    role: Role,
+  ): Promise<UserEntity> {
     const exists = await this.userModel.findOne({ email });
     if (exists) throw new ConflictException('Email already taken');
     const passwordHash = await bcrypt.hash(password, 10);
-    return await this.userModel.create({
+    const user = await this.userModel.create({
       email,
       passwordHash,
       role,
+    });
+
+    return new UserEntity({
+      id: (user._id as Types.ObjectId).toString(),
+      email: user.email,
+      role: user.role,
+      status: user.status,
     });
   }
 
   async validateUser(
     email: string,
     password: string,
-  ): Promise<ValidatedUser | null> {
+  ): Promise<UserEntity | null> {
     const user = await this.userModel
       .findOne({ email, status: true })
       .select('+passwordHash');
@@ -47,11 +53,11 @@ export class AuthService {
 
     if (!isPasswordValid) return null;
 
-    return {
-      _id: (user._id as Types.ObjectId).toString(),
+    return new UserEntity({
+      id: (user._id as Types.ObjectId).toString(),
       email: user.email,
       role: user.role,
-    };
+    });
   }
 
   async getUser(email: string): Promise<User | null> {
