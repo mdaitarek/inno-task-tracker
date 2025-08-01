@@ -61,7 +61,7 @@ export class TasksService {
     );
 
     if (!task) {
-      throw new NotFoundException(`Task with ID "${id}" not found`);
+      throw new NotFoundException(`Task not found`);
     }
 
     return task;

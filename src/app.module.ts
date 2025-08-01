@@ -8,8 +8,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import * as dotenv from 'dotenv';
 import { configuration } from './config';
 import { ConfigModule } from '@nestjs/config';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { LoggingInterceptor } from 'src/common';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { HttpExceptionsFilter, LoggingInterceptor } from 'src/common';
 
 dotenv.config();
 
@@ -33,6 +33,10 @@ dotenv.config();
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionsFilter,
     },
   ],
 })
