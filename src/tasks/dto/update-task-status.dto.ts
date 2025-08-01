@@ -8,7 +8,7 @@ export class UpdateTaskStatusDto {
     enum: TaskStatus,
     example: TaskStatus.IN_PROGRESS,
   })
-  @IsNotEmpty()
-  @IsEnum(TaskStatus)
+  @IsNotEmpty({ message: 'Status is required' })
+  @IsEnum(TaskStatus, { message: 'Status must be a valid TaskStatus value' })
   status: TaskStatus;
 }

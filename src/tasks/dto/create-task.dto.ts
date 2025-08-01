@@ -1,6 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { TaskStatus } from '../schemas/task.schema';
-import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateTaskDto {
@@ -8,8 +14,8 @@ export class CreateTaskDto {
     description: 'Title of the task',
     example: 'Write documentation',
   })
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: 'Title is required' })
+  @IsString({ message: 'Title must be a string' })
   title: string;
 
   @ApiPropertyOptional({
@@ -17,8 +23,8 @@ export class CreateTaskDto {
     example: 'Complete the API documentation for all endpoints',
   })
   @IsOptional()
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: 'Description should not be empty if provided' })
+  @IsString({ message: 'Description must be a string' })
   description?: string;
 
   @ApiPropertyOptional({
@@ -28,8 +34,8 @@ export class CreateTaskDto {
     format: 'date-time',
   })
   @IsOptional()
-  @IsNotEmpty()
-  @IsDate()
+  @IsNotEmpty({ message: 'Due date should not be empty if provided' })
+  @IsDate({ message: 'Due date must be a valid Date instance' })
   @Type(() => Date)
   dueDate?: Date;
 
@@ -39,6 +45,6 @@ export class CreateTaskDto {
     example: TaskStatus.OPEN,
   })
   @IsOptional()
-  @IsEnum(TaskStatus)
+  @IsEnum(TaskStatus, { message: 'Status must be a valid TaskStatus value' })
   status?: TaskStatus;
 }

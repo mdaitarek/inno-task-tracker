@@ -1,6 +1,12 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { TaskStatus } from '../schemas/task.schema';
-import { IsEnum, IsISO8601, IsOptional, IsPositive, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsISO8601,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 
 export class GetTasksDto {
@@ -10,23 +16,25 @@ export class GetTasksDto {
     example: TaskStatus.OPEN,
   })
   @IsOptional()
-  @IsEnum(TaskStatus)
+  @IsEnum(TaskStatus, { message: 'Status must be a valid TaskStatus value' })
   status?: TaskStatus;
 
   @ApiPropertyOptional({
-    description: 'Filter tasks with due date from this date (ISO 8601 date string)',
+    description:
+      'Filter tasks with due date from this date (ISO 8601 date string)',
     example: '2025-07-01',
   })
   @IsOptional()
-  @IsISO8601()
+  @IsISO8601({}, { message: 'dueFrom must be a valid ISO 8601 date string' })
   dueFrom?: string;
 
   @ApiPropertyOptional({
-    description: 'Filter tasks with due date until this date (ISO 8601 date string)',
+    description:
+      'Filter tasks with due date until this date (ISO 8601 date string)',
     example: '2025-07-31',
   })
   @IsOptional()
-  @IsISO8601()
+  @IsISO8601({}, { message: 'dueTo must be a valid ISO 8601 date string' })
   dueTo?: string;
 
   @ApiPropertyOptional({
@@ -34,7 +42,7 @@ export class GetTasksDto {
     example: 'documentation',
   })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Search must be a string' })
   search?: string;
 
   @ApiPropertyOptional({
@@ -44,7 +52,7 @@ export class GetTasksDto {
     example: 1,
   })
   @IsOptional()
-  @IsPositive()
+  @IsPositive({ message: 'Page must be a positive number' })
   @Type(() => Number)
   @Transform(({ value }) => parseInt(value) || 1)
   page?: number = 1;
@@ -56,7 +64,7 @@ export class GetTasksDto {
     example: 10,
   })
   @IsOptional()
-  @IsPositive()
+  @IsPositive({ message: 'Limit must be a positive number' })
   @Type(() => Number)
   @Transform(({ value }) => parseInt(value) || 10)
   limit?: number = 10;
