@@ -6,16 +6,10 @@ import { CreateTaskDto, GetTasksDto, UpdateTaskStatusDto } from 'src/tasks/dto';
 
 @Injectable()
 export class TasksService {
-  constructor(@InjectModel(Task.name) private taskModel: Model<Task>) {
-  }
+  constructor(@InjectModel(Task.name) private taskModel: Model<Task>) {}
 
   async create(_dto: CreateTaskDto) {
-    const {
-      title,
-      description,
-      dueDate,
-      status,
-    } = _dto;
+    const { title, description, dueDate, status } = _dto;
     return await this.taskModel.create({
       title,
       description: description ?? '',
@@ -38,8 +32,9 @@ export class TasksService {
       ...(search && { title: { $regex: search, $options: 'i' } }),
     };
     const skip = (page - 1) * limit;
-    
-    const data = await this.taskModel.find(filter)
+
+    const data = await this.taskModel
+      .find(filter)
       .skip(skip)
       .limit(limit)
       .exec();
