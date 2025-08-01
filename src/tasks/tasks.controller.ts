@@ -28,8 +28,7 @@ export class TasksController {
   async list(@Query() query: GetTasksDto): Promise<TasksPaginatedEntity> {
     return await this.tasksService.list(query);
   }
-
-
+  
   @ApiOperation({ summary: 'Update task status' })
   @ApiResponse({ status: 200, description: 'The task status has been successfully updated.', type: TaskEntity })
   @ApiResponse({ status: 404, description: 'Task not found.' })

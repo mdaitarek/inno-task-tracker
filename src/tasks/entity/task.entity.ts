@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TaskStatus } from 'src/tasks/schemas/task.schema';
+import { TaskStatus } from '../schemas/task.schema';
 
 export class TaskEntity {
   @ApiProperty({

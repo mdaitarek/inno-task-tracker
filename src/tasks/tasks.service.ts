@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Task, TaskStatus } from 'src/tasks/schemas/task.schema';
+import { Task } from './schemas/task.schema';
 import { CreateTaskDto, GetTasksDto, UpdateTaskStatusDto } from 'src/tasks/dto';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class TasksService {
       title,
       description: description ?? '',
       dueDate: dueDate ?? null,
-      status: status ?? TaskStatus.OPEN,
+      ...(status && { status }),
     });
   }
 
@@ -37,18 +37,14 @@ export class TasksService {
       }),
       ...(search && { title: { $regex: search, $options: 'i' } }),
     };
-
-
     const skip = (page - 1) * limit;
-
+    
     const data = await this.taskModel.find(filter)
       .skip(skip)
       .limit(limit)
       .exec();
 
-
     const total = await this.taskModel.countDocuments(filter);
-
     const totalPages = Math.ceil(total / limit);
 
     return {

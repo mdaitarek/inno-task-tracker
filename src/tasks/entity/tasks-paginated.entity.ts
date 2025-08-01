@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TaskEntity } from 'src/tasks/entity/task.entity';
-import { Task } from 'src/tasks/schemas/task.schema';
+import { TaskEntity } from './task.entity';
+import { Task } from '../schemas/task.schema';
 
 export class TasksPaginatedEntity {
   @ApiProperty({
